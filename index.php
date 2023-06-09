@@ -102,7 +102,7 @@ function CF_Courses()
     <div class="bg-blue-1">
         <div class="bg-red col-90">
             <h4><b>Course Price</b></h4>
-            <input type="text">
+            <input type="text" name="price">
         </div>
     </div>
   
@@ -144,7 +144,7 @@ function database_table(){
     $course_det = "CREATE TABLE $database_table_name (
         ID int(9) NOT NULL,
         title text(100) NOT NULL,
-        price int(9) NOT NULL,
+        price text(9) NOT NULL,
         thumbnail text NOT NULL,
         content text NOT NULL,
         PRIMARY KEY(ID)
@@ -154,3 +154,31 @@ function database_table(){
 }
 
 register_activation_hook(__FILE__,'database_table');
+
+
+/* save data to course details */
+
+function save_custom_fields(){
+    global $wpdb;    
+    // https://developer.wordpress.org/reference/functions/ link resource for most of the wp functions
+    // to get post id 
+    $Id = get_the_id();
+    $Title = get_the_title();
+    $Content = get_post_field('post_content', $Id);
+    // $Content = the_content();
+    $Thumbnail = get_the_post_thumbnail_url();
+    // populate with html form data 
+    $price = $_POST['price'];
+
+    $wpdb->insert(
+        $wpdb->prefix.'lms_course_details',  // db table name
+        [
+            'ID' => $Id,
+            'price' => $price,
+            'title' =>$Title,
+            'thumbnail' =>$Thumbnail,
+            'content' => $Content,
+        ]
+    );
+}
+add_action('save_post', 'save_custom_fields');

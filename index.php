@@ -159,14 +159,15 @@ register_activation_hook(__FILE__,'database_table');
 /* save data to course details */
 
 function save_custom_fields(){
-    global $wpdb;    
+    global $wpdb;  // to user database function features 
+
     // https://developer.wordpress.org/reference/functions/ link resource for most of the wp functions
     // to get post id 
     $Id = get_the_id();
     $Title = get_the_title();
     $Content = get_post_field('post_content', $Id);
-    // $Content = the_content();
     $Thumbnail = get_the_post_thumbnail_url();
+
     // populate with html form data 
     $price = $_POST['price'];
 
@@ -182,3 +183,6 @@ function save_custom_fields(){
     );
 }
 add_action('save_post', 'save_custom_fields');
+
+
+/* to fetch and update recent data */ 

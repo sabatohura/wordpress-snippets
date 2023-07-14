@@ -96,17 +96,27 @@ function CF_Courses_Main()
 function CF_Courses()
 {
     
-    echo "this is our custom fields";
+    // echo "this is our custom fields";
     wp_head();
-    ?>
+    global $wpdb;
+
+    global $post;
+    $id = get_the_id();
+    $ourdb = $wpdb->prefix."lms_course_details";
+    $data = $wpdb->get_var("SELECT `*` FROM  `$ourdb` WHERE  `ID` = '".$id."'  ");
+    while ($rows = $data->fetch_assoc()) {
+        # code...
+
+   ?>
     <div class="bg-blue-1">
         <div class="bg-red col-90">
             <h4><b>Course Price</b></h4>
-            <input type="text" name="price">
+            <input type="text" name="price" value = "<?=$rows["price"]?>">
         </div>
     </div>
   
     <?php
+        }
 }
 
 add_action("admin_init","CF_Courses_Main");
@@ -175,11 +185,17 @@ function save_custom_fields(){
         $wpdb->prefix.'lms_course_details',  // db table name
         [
             'ID' => $Id,
-            'price' => $price,
-            'title' =>$Title,
-            'thumbnail' =>$Thumbnail,
-            'content' => $Content,
         ]
+    );
+
+    $wpdb->update(
+        $wpdb->prefix.'lms_course_details',
+        [
+        'price' => $price,
+        'title' =>$Title,
+        'thumbnail' =>$Thumbnail,
+        'content' => $Content,],
+        ['ID' => $Id,]
     );
 }
 add_action('save_post', 'save_custom_fields');

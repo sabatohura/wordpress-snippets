@@ -1,1 +1,1 @@
-# simple wordpress plugin with mysql database
+# Bunch of wordpress trick codes
